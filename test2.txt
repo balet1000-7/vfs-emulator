@@ -1,5 +1,5 @@
 # Тест переменных окружения
-echo "Пользователь: $USERNAME
-echo Путь: $PATH
+echo Пользователь: $USERNAME
+echo Путь: $HOME
 ls
 cd /tmp
