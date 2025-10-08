@@ -1,0 +1,4 @@
+echo Тест
+ls -la
+cd /home
+echo HOME: $HOME

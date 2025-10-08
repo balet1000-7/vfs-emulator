@@ -1,0 +1,5 @@
+echo Тест 2
+echo Домашняя папка: $HOME
+echo Пользователь: $USERNAME
+ls
+cd /tmp
