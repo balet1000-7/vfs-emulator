@@ -1,0 +1,212 @@
+Index: step1.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#!/usr/bin/env python3\r\nimport os\r\nimport shlex\r\nimport sys\r\n\r\nVFS_NAME = \"MYVFS\"   # имя вашей виртуальной ФС, видно в приглашении\r\nCWD = \"/\"            # текущий путь внутри VFS (пока фиктивный, т.к. заглушки)\r\n\r\ndef make_prompt():\r\n    return f\"[{VFS_NAME} {CWD}]$ \"\r\n\r\ndef parse(line: str):\r\n    \"\"\"\r\n    1) Подставляем переменные окружения ($HOME, $USER, ...).\r\n    2) Разбиваем строку на токены с учётом кавычек (shlex).\r\n    Примечание: заданию достаточно простой подстановки, строгую семантику bash не повторяем.\r\n    \"\"\"\r\n    expanded = os.path.expandvars(line)        # $HOME, ${HOME} и т.п.\r\n    tokens = shlex.split(expanded)             # корректно учитывает кавычки и пробелы\r\n    return tokens\r\n\r\ndef cmd_exit(args):\r\n    if not args:\r\n        print(\"Bye!\")\r\n        sys.exit(0)\r\n    # пытаемся интерпретировать код выхода\r\n    try:\r\n        code = int(args[0])\r\n    except ValueError:\r\n        print(\"error: exit code must be an integer (e.g., 'exit 0')\")\r\n        return\r\n    print(\"Bye!\")\r\n    sys.exit(code)\r\n\r\ndef cmd_stub(name, args):\r\n    print(f\"[stub] {name} args:\", args)\r\n\r\ndef cmd_help():\r\n    print(\"Available commands:\")\r\n    print(\"  ls <args...>   - stub, prints its args\")\r\n    print(\"  cd <args...>   - stub, prints its args\")\r\n    print(\"  exit [code]    - exit the shell\")\r\n    print(\"  help           - show this help\")\r\n\r\ndef main():\r\n    while True:\r\n        try:\r\n            line = input(make_prompt())\r\n        except EOFError:\r\n            # Ctrl+D — культурно завершаемся\r\n            print()\r\n            break\r\n        except KeyboardInterrupt:\r\n            # Ctrl+C — просто перенос строки и продолжаем\r\n            print()\r\n            continue\r\n\r\n        if not line.strip():\r\n            continue  # пустой ввод игнорируем\r\n\r\n        try:\r\n            tokens = parse(line)\r\n        except ValueError as e:\r\n            # shlex может бросить ошибку при незакрытых кавычках и т.п.\r\n            print(f\"parse error: {e}\")\r\n            continue\r\n\r\n        if not tokens:\r\n            continue\r\n\r\n        cmd, *args = tokens\r\n\r\n        if cmd == \"exit\":\r\n            cmd_exit(args)\r\n        elif cmd == \"ls\":\r\n            cmd_stub(\"ls\", args)\r\n        elif cmd == \"cd\":\r\n            cmd_stub(\"cd\", args)\r\n        elif cmd in (\"help\", \"?\"):\r\n            cmd_help()\r\n        else:\r\n            print(f\"unknown command: {cmd}. Type 'help' to see available commands.\")\r\n\r\nif __name__ == \"__main__\":\r\n    main()\r\n
+===================================================================
+diff --git a/step1.py b/step1.py
+--- a/step1.py	(revision 4826f4f0d3eb6b8e1d288e52c97651027c8697d1)
++++ b/step1.py	(date 1759668152679)
+@@ -1,85 +1,137 @@
+-#!/usr/bin/env python3
+ import os
++import sys
+ import shlex
+-import sys
++import re
++
++try:
++    sys.stdin.reconfigure(encoding="utf-8", errors="replace")
++    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
++except Exception:
++    pass
+ 
+-VFS_NAME = "MYVFS"   # имя вашей виртуальной ФС, видно в приглашении
+-CWD = "/"            # текущий путь внутри VFS (пока фиктивный, т.к. заглушки)
++if os.name == "nt":
++    try:
++        import ctypes
++        # Кодовые страницы консоли
++        ctypes.windll.kernel32.SetConsoleOutputCP(65001)
++        ctypes.windll.kernel32.SetConsoleCP(65001)
++    except Exception:
++        pass
++    # Страховка для Python
++    os.environ.setdefault("PYTHONUTF8", "1")
++    os.environ.setdefault("PYTHONIOENCODING", "utf-8")
+ 
+-def make_prompt():
++
++VFS_NAME = "MYVFS"   # имя VFS в приглашении
++CWD = "/"            # текущий путь (пока заглушка)
++
++def make_prompt() -> str:
+     return f"[{VFS_NAME} {CWD}]$ "
+ 
+-def parse(line: str):
++# допустимое имя переменной окружения
++_VAR_NAME = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
++
++def _expand_exact_env_ref(token: str) -> str:
+     """
+-    1) Подставляем переменные окружения ($HOME, $USER, ...).
+-    2) Разбиваем строку на токены с учётом кавычек (shlex).
+-    Примечание: заданию достаточно простой подстановки, строгую семантику bash не повторяем.
++    Раскрывает ТОКЕН, если он полностью одной из форм:
++      $NAME
++      ${NAME}
++      %NAME%        (cmd.exe стиль)
++      $env:NAME     (PowerShell стиль, регистронезависимо для 'env')
++    Иначе возвращает исходный token.
+     """
+-    expanded = os.path.expandvars(line)        # $HOME, ${HOME} и т.п.
+-    tokens = shlex.split(expanded)             # корректно учитывает кавычки и пробелы
+-    return tokens
++    # ${NAME}
++    if token.startswith("${") and token.endswith("}") and len(token) > 3:
++        name = token[2:-1]
++        if _VAR_NAME.match(name):
++            return os.environ.get(name, token)
++        return token
++
++    # $NAME
++    if token.startswith("$") and len(token) > 1 and "{" not in token:
++        name = token[1:]
++        if _VAR_NAME.match(name):
++            return os.environ.get(name, token)
++        return token
++
++    # %NAME%
++    if token.startswith("%") and token.endswith("%") and len(token) > 2:
++        name = token[1:-1]
++        if _VAR_NAME.match(name):
++            return os.environ.get(name, token)
++        return token
+ 
+-def cmd_exit(args):
+-    if not args:
+-        print("Bye!")
+-        sys.exit(0)
+-    # пытаемся интерпретировать код выхода
++    # $env:NAME  (PowerShell)
++    low = token.lower()
++    if low.startswith("$env:") and len(token) > 5:
++        name = token[5:]
++        if _VAR_NAME.match(name):
++            return os.environ.get(name, token)
++        return token
++
++    return token
++
++def parse_command(line: str) -> list[str]:
++    """
++    Разбивает строку как shell: учитывает кавычки.
++    Затем по каждому токену выполняет раскрытие переменных окружения.
++    """
+     try:
+-        code = int(args[0])
+-    except ValueError:
+-        print("error: exit code must be an integer (e.g., 'exit 0')")
+-        return
+-    print("Bye!")
+-    sys.exit(code)
++        parts = shlex.split(line, posix=True)
++    except ValueError as e:
++        print(f"Ошибка парсера: {e}")
++        return []
++    # подстановка HOME для Windows, если вдруг отсутствует
++    if os.name == "nt":
++        home = os.environ.get("HOME") or os.environ.get("USERPROFILE")
++        if home:
++            os.environ.setdefault("HOME", home)
+ 
+-def cmd_stub(name, args):
+-    print(f"[stub] {name} args:", args)
++    return [_expand_exact_env_ref(p) for p in parts]
+ 
+-def cmd_help():
+-    print("Available commands:")
+-    print("  ls <args...>   - stub, prints its args")
+-    print("  cd <args...>   - stub, prints its args")
+-    print("  exit [code]    - exit the shell")
+-    print("  help           - show this help")
+-
+-def main():
++def repl():
++    print("Эмулятор запущен. Введите 'exit' для выхода.")
+     while True:
+         try:
+-            line = input(make_prompt())
+-        except EOFError:
+-            # Ctrl+D — культурно завершаемся
+-            print()
+-            break
+-        except KeyboardInterrupt:
+-            # Ctrl+C — просто перенос строки и продолжаем
+-            print()
+-            continue
++            line = input(make_prompt()).strip()
++            if not line:
++                continue
+ 
+-        if not line.strip():
+-            continue  # пустой ввод игнорируем
+ 
+-        try:
+-            tokens = parse(line)
+-        except ValueError as e:
+-            # shlex может бросить ошибку при незакрытых кавычках и т.п.
+-            print(f"parse error: {e}")
+-            continue
++            if line.startswith("$") or line.startswith("%") or line.lower().startswith("$env:"):
++                line = "echo " + line
++
++            parts = parse_command(line)
++            if not parts:
++                continue
+ 
+-        if not tokens:
+-            continue
+-
+-        cmd, *args = tokens
++            cmd, *args = parts
+ 
+-        if cmd == "exit":
+-            cmd_exit(args)
+-        elif cmd == "ls":
+-            cmd_stub("ls", args)
+-        elif cmd == "cd":
+-            cmd_stub("cd", args)
+-        elif cmd in ("help", "?"):
+-            cmd_help()
+-        else:
+-            print(f"unknown command: {cmd}. Type 'help' to see available commands.")
++            if cmd == "exit":
++                print("Выход.")
++                break
++
++            elif cmd == "echo":
++                # простая реализация echo
++                print(" ".join(args))
++
++            elif cmd == "ls":
++                # заглушка по ТЗ
++                print(f"Команда: ls, аргументы: {args}")
++
++            elif cmd == "cd":
++                # заглушка по ТЗ (можно потом реально менять CWD)
++                print(f"Команда: cd, аргументы: {args}")
++
++            else:
++                print(f"Неизвестная команда: {cmd}")
++
++        except KeyboardInterrupt:
++            print("\n^C")
++            break
++        except EOFError:
++            print()
++            break
+ 
+ if __name__ == "__main__":
+-    main()
++    repl()
+\ No newline at end of file
