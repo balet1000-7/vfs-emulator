@@ -1,4 +1,6 @@
-echo Тест
+# Простой тестовый скрипт
+echo "Привет из скрипта!"
 ls -la
 cd /home
-echo HOME: $HOME
+echo Домашняя папка: $Home
+exit
