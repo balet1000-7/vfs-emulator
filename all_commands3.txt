@@ -1,0 +1,13 @@
+# Краткий тест всех команд
+echo Старт теста
+ls
+cd multilevel
+ls
+cd folder1
+pwd
+cd /
+echo HOME: $HOME
+vfs-init
+ls
+echo Тест завершен
+exit

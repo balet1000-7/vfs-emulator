@@ -5,8 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ce7cffe2-75ae-40fa-8d03-ebf916b127bc" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/all_commands3.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test_all_commands3.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test_binary_vfs3.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test_minimal_vfs3.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test_multilevel_vfs3.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test_vfs_errors3.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test_vfs_init3.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test_vfs_init3.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test2.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stepn1.py" beforeDir="false" afterPath="$PROJECT_DIR$/stepn1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_basic.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_script.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_vfs.bat" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -1,0 +1,9 @@
+# Тест команды vfs-init
+echo "=== До vfs-init ==="
+ls
+echo "--- Выполняем vfs-init ---"
+vfs-init
+echo "--- После vfs-init ==="
+ls
+echo "=== Тест завершен ==="
+exit
