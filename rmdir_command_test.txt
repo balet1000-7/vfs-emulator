@@ -1,0 +1,4 @@
+ls
+rmdir for_5stage
+ls
+exit

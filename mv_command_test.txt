@@ -1,0 +1,9 @@
+ls
+cd multilevel
+ls
+mv root.txt.txt root.txt
+ls
+mv root.txt /folder1/
+ls
+cd folder1
+ls

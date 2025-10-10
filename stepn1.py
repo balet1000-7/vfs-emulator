@@ -31,7 +31,7 @@ CONFIG = {
     "no_interactive": False,
 }
 
-# ===== VFS (Виртуальная Файловая Система) =====
+# VFS (Виртуальная Файловая Система)
 VFS = {
     "files": {},
     "folders": set(),
@@ -45,10 +45,6 @@ def make_prompt() -> str:
 
 
 def load_vfs_from_zip(zip_path: str) -> bool:
-    """
-    Загружает VFS из ZIP-архива в память
-    Соответствует требованиям 1, 2, 3 этапа 3
-    """
     try:
         if not os.path.exists(zip_path):
             print(f"Ошибка: VFS файл не найден: {zip_path}")
@@ -87,10 +83,6 @@ def load_vfs_from_zip(zip_path: str) -> bool:
 
 
 def vfs_init():
-    """
-    Сбрасывает VFS к состоянию по умолчанию
-    Соответствует требованию 4 этапа 3
-    """
     VFS["files"] = {}
     VFS["folders"] = set()
     VFS["cwd"] = "/"
@@ -201,7 +193,6 @@ def cat_file(filename: str) -> bool:
 
 
 def rev_text(text: str) -> str:
-    """Переворачивает строку"""
     return text[::-1]
 
 
@@ -233,6 +224,136 @@ def rev_file(filename: str) -> bool:
     else:
         print(f"rev: {filename}: No such file or directory")
         return False
+
+
+def move_file(source: str, destination: str) -> bool:
+    """Перемещает или переименовывает файл/папку в VFS"""
+    # Получаем абсолютные пути для источника
+    if source.startswith('/'):
+        source_path = source.lstrip('/')
+    else:
+        if VFS["cwd"] == "/":
+            source_path = source
+        else:
+            source_path = VFS["cwd"].lstrip('/') + source
+    source_path = source_path.rstrip('/')
+
+    # Получаем абсолютные пути для назначения
+    if destination.startswith('/'):
+        dest_path = destination.lstrip('/')
+    else:
+        if VFS["cwd"] == "/":
+            dest_path = destination
+        else:
+            dest_path = VFS["cwd"].lstrip('/') + destination
+    dest_path = dest_path.rstrip('/')
+
+    # Проверяем существование источника
+    source_is_file = source_path in VFS["files"]
+    source_is_folder = source_path + '/' in VFS["folders"]
+
+    if not source_is_file and not source_is_folder:
+        print(f"mv: cannot move '{source}': No such file or directory")
+        return False
+
+    # Проверяем не пытаемся ли переместить папку в файл
+    if source_is_folder and dest_path in VFS["files"]:
+        print(f"mv: cannot overwrite non-directory '{destination}' with directory '{source}'")
+        return False
+
+    # Если назначение существует и это папка, перемещаем в неё
+    if dest_path + '/' in VFS["folders"]:
+        # Получаем имя источника
+        source_name = source_path.split('/')[-1]
+        dest_path = dest_path.rstrip('/') + '/' + source_name
+
+    # Перемещаем файл
+    if source_is_file:
+        VFS["files"][dest_path] = VFS["files"][source_path]
+        del VFS["files"][source_path]
+
+        # Обновляем текущую директорию если она была затронута
+        if VFS["cwd"].lstrip('/').startswith(source_path + '/'):
+            new_cwd = VFS["cwd"].lstrip('/').replace(source_path, dest_path, 1)
+            VFS["cwd"] = '/' + new_cwd if new_cwd else '/'
+
+    # Перемещаем папку
+    elif source_is_folder:
+        # Добавляем новую папку
+        VFS["folders"].add(dest_path + '/')
+        VFS["folders"].remove(source_path + '/')
+
+        # Перемещаем все файлы и подпапки
+        files_to_move = []
+        folders_to_move = []
+
+        for file_path in list(VFS["files"].keys()):
+            if file_path.startswith(source_path + '/'):
+                files_to_move.append(file_path)
+
+        for folder_path in list(VFS["folders"]):
+            if folder_path.startswith(source_path + '/') and folder_path != source_path + '/':
+                folders_to_move.append(folder_path)
+
+        # Перемещаем файлы
+        for file_path in files_to_move:
+            new_file_path = file_path.replace(source_path, dest_path, 1)
+            VFS["files"][new_file_path] = VFS["files"][file_path]
+            del VFS["files"][file_path]
+
+        # Перемещаем подпапки
+        for folder_path in folders_to_move:
+            new_folder_path = folder_path.replace(source_path, dest_path, 1)
+            VFS["folders"].add(new_folder_path)
+            VFS["folders"].remove(folder_path)
+
+        # Обновляем текущую директорию если она была затронута
+        if VFS["cwd"].lstrip('/').startswith(source_path + '/'):
+            new_cwd = VFS["cwd"].lstrip('/').replace(source_path, dest_path, 1)
+            VFS["cwd"] = '/' + new_cwd if new_cwd else '/'
+
+    return True
+
+
+def remove_directory(dirname: str) -> bool:
+    """Удаляет пустую директорию из VFS"""
+    # Получаем абсолютный путь к директории
+    if dirname.startswith('/'):
+        abs_path = dirname.lstrip('/')
+    else:
+        if VFS["cwd"] == "/":
+            abs_path = dirname
+        else:
+            abs_path = VFS["cwd"].lstrip('/') + dirname
+
+    # Добавляем завершающий слеш для папки
+    if not abs_path.endswith('/'):
+        abs_path += '/'
+
+    # Проверяем существование папки
+    if abs_path not in VFS["folders"]:
+        print(f"rmdir: failed to remove '{dirname}': No such file or directory")
+        return False
+
+    # Проверяем что папка пуста
+    for file_path in VFS["files"]:
+        if file_path.startswith(abs_path):
+            print(f"rmdir: failed to remove '{dirname}': Directory not empty")
+            return False
+
+    for folder_path in VFS["folders"]:
+        if folder_path.startswith(abs_path) and folder_path != abs_path:
+            print(f"rmdir: failed to remove '{dirname}': Directory not empty")
+            return False
+
+    # Удаляем папку
+    VFS["folders"].remove(abs_path)
+
+    # Если текущая директория была удалена, возвращаемся в корень
+    if VFS["cwd"].lstrip('/').startswith(abs_path.rstrip('/')):
+        VFS["cwd"] = "/"
+
+    return True
 
 
 # допустимое имя переменной окружения
@@ -335,11 +456,9 @@ def execute_line(line: str) -> str | None:
             for filename in args:
                 cat_file(filename)
 
-
     elif cmd == "rev":
         if not VFS["loaded"]:
             print("VFS не загружена. Используйте -v путь_к_zip для загрузки.")
-
         elif not args:
             print("rev: missing operand")
         else:
@@ -354,10 +473,26 @@ def execute_line(line: str) -> str | None:
                 if abs_path in VFS["files"]:
                     # Если это файл - обрабатываем как файл
                     rev_file(arg)
-
                 else:
                     # Иначе обрабатываем как текст
                     print(rev_text(arg))
+
+    elif cmd == "mv":
+        if not VFS["loaded"]:
+            print("VFS не загружена. Используйте -v путь_к_zip для загрузки.")
+        elif len(args) != 2:
+            print("mv: missing operand" if len(args) < 2 else "mv: too many arguments")
+        else:
+            move_file(args[0], args[1])
+
+    elif cmd == "rmdir":
+        if not VFS["loaded"]:
+            print("VFS не загружена. Используйте -v путь_к_zip для загрузки.")
+        elif not args:
+            print("rmdir: missing operand")
+        else:
+            for dirname in args:
+                remove_directory(dirname)
 
     else:
         print(f"Неизвестная команда: {cmd}")
@@ -411,7 +546,7 @@ def _abspath_or_none(p: str | None) -> str | None:
 
 
 def parse_cli_args():
-    parser = argparse.ArgumentParser(description="Эмулятор оболочки — Этап 4: Основные команды")
+    parser = argparse.ArgumentParser(description="Эмулятор оболочки — Этап 5: Дополнительные команды")
     parser.add_argument("-v", "--vfs", dest="vfs_root", help="Путь к ZIP-архиву с VFS", default=None)
     parser.add_argument("-s", "--script", dest="startup_script", help="Путь к стартовому скрипту", default=None)
     parser.add_argument("--no-interactive", action="store_true", help="Не входить в REPL")

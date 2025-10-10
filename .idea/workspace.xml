@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ce7cffe2-75ae-40fa-8d03-ebf916b127bc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/test4_cat_rev_cd.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test4_pwd_cd_cat_rev.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mv_command_test.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mv_command_test.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rmdir_command_test.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rmdir_command_test.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minimal.zip" beforeDir="false" afterPath="$PROJECT_DIR$/minimal.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/stepn1.py" beforeDir="false" afterPath="$PROJECT_DIR$/stepn1.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -34,29 +35,55 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python..executor&quot;: &quot;Run&quot;,
-    &quot;Python.dlya_vtorogo.executor&quot;: &quot;Run&quot;,
-    &quot;Python.step1.executor&quot;: &quot;Run&quot;,
-    &quot;Python.stepn1.executor&quot;: &quot;Run&quot;,
-    &quot;Python.stepn1.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test1.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test2.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test3.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test3.txt.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_zip.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/PythonProject3&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Git&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python..executor": "Run",
+    "Python.dlya_vtorogo.executor": "Run",
+    "Python.for_5stage.executor": "Run",
+    "Python.min_test.executor": "Run",
+    "Python.multilevel_test.executor": "Run",
+    "Python.step1.executor": "Run",
+    "Python.stepn1.executor": "Run",
+    "Python.stepn1.py.executor": "Run",
+    "Python.test.executor": "Run",
+    "Python.test1.executor": "Run",
+    "Python.test2.executor": "Run",
+    "Python.test3.executor": "Run",
+    "Python.test3.txt.executor": "Run",
+    "Python.test_zip.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "D:/PythonProject3",
+    "settings.editor.selected.configurable": "vcs.Git"
   }
-}</component>
-  <component name="RunManager">
-    <configuration name="test" type="PythonConfigurationType" factoryName="Python">
+}]]></component>
+  <component name="RunManager" selected="Python.multilevel_test">
+    <configuration name="for_5stage" type="PythonConfigurationType" factoryName="Python">
+      <module name="PythonProject3" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.13 (PythonProject3)" />
+      <option name="WORKING_DIRECTORY" value="D:\PythonProject3" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/stepn1.py" />
+      <option name="PARAMETERS" value="-v for_5stage.zip" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="min_test" type="PythonConfigurationType" factoryName="Python">
       <module name="PythonProject3" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -79,6 +106,34 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="multilevel_test" type="PythonConfigurationType" factoryName="Python">
+      <module name="PythonProject3" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.13 (PythonProject3)" />
+      <option name="WORKING_DIRECTORY" value="D:\PythonProject3" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/stepn1.py" />
+      <option name="PARAMETERS" value="-v multilevel.zip" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.min_test" />
+      <item itemvalue="Python.for_5stage" />
+      <item itemvalue="Python.multilevel_test" />
+    </list>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
