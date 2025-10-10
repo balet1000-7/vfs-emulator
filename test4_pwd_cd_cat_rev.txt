@@ -1,0 +1,9 @@
+ls
+cd minimal
+ls
+pwd
+cat file1.txt
+rev file1.txt
+cat file2.txt
+rev file2.txt
+cat file1.txt file2.txt

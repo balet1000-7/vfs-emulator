@@ -158,11 +158,80 @@ def change_vfs_directory(new_path: str) -> bool:
             path_exists = True
             break
 
+    # ДОПОЛНИТЕЛЬНАЯ ПРОВЕРКА: не позволяем переходить в файлы
+    # Убираем слеш в конце и проверяем не файл ли это
+    clean_path = search_path.rstrip('/')
+    if clean_path in VFS["files"]:
+        print(f"Ошибка: '{new_path}' является файлом, а не директорией")
+        return False
+
     if path_exists:
         VFS["cwd"] = target_path
         return True
     else:
         print(f"Ошибка: директория не существует: {target_path}")
+        return False
+
+
+def cat_file(filename: str) -> bool:
+    """Выводит содержимое файла из VFS"""
+    # Получаем абсолютный путь к файлу
+    if filename.startswith('/'):
+        abs_path = filename.lstrip('/')
+    else:
+        if VFS["cwd"] == "/":
+            abs_path = filename
+        else:
+            abs_path = VFS["cwd"].lstrip('/') + filename
+
+    # Убираем завершающий слеш если он есть (когда пользователь использовал cd на файле)
+    abs_path = abs_path.rstrip('/')
+
+    # Ищем файл в VFS
+    if abs_path in VFS["files"]:
+        content = VFS["files"][abs_path]
+        if content.startswith("[base64]"):
+            print(f"Файл {filename} содержит бинарные данные")
+        else:
+            print(content)
+        return True
+    else:
+        print(f"cat: {filename}: No such file or directory")
+        return False
+
+
+def rev_text(text: str) -> str:
+    """Переворачивает строку"""
+    return text[::-1]
+
+
+def rev_file(filename: str) -> bool:
+    """Выводит содержимое файла в обратном порядке"""
+    # Получаем абсолютный путь к файлу
+    if filename.startswith('/'):
+        abs_path = filename.lstrip('/')
+    else:
+        if VFS["cwd"] == "/":
+            abs_path = filename
+        else:
+            abs_path = VFS["cwd"].lstrip('/') + filename
+
+    # Убираем завершающий слеш если он есть
+    abs_path = abs_path.rstrip('/')
+
+    # Ищем файл в VFS
+    if abs_path in VFS["files"]:
+        content = VFS["files"][abs_path]
+        if content.startswith("[base64]"):
+            print(f"rev: {filename}: Binary file")
+            return False
+        else:
+            # Переворачиваем содержимое файла
+            reversed_content = rev_text(content)
+            print(reversed_content)
+            return True
+    else:
+        print(f"rev: {filename}: No such file or directory")
         return False
 
 
@@ -257,6 +326,39 @@ def execute_line(line: str) -> str | None:
     elif cmd == "pwd":
         print(VFS["cwd"])
 
+    elif cmd == "cat":
+        if not VFS["loaded"]:
+            print("VFS не загружена. Используйте -v путь_к_zip для загрузки.")
+        elif not args:
+            print("cat: missing operand")
+        else:
+            for filename in args:
+                cat_file(filename)
+
+
+    elif cmd == "rev":
+        if not VFS["loaded"]:
+            print("VFS не загружена. Используйте -v путь_к_zip для загрузки.")
+
+        elif not args:
+            print("rev: missing operand")
+        else:
+            for arg in args:
+                # Проверяем является ли аргумент файлом в VFS
+                abs_path = arg.lstrip('/')
+                if VFS["cwd"] != "/":
+                    abs_path = VFS["cwd"].lstrip('/') + arg
+
+                abs_path = abs_path.rstrip('/')
+
+                if abs_path in VFS["files"]:
+                    # Если это файл - обрабатываем как файл
+                    rev_file(arg)
+
+                else:
+                    # Иначе обрабатываем как текст
+                    print(rev_text(arg))
+
     else:
         print(f"Неизвестная команда: {cmd}")
 
@@ -309,7 +411,7 @@ def _abspath_or_none(p: str | None) -> str | None:
 
 
 def parse_cli_args():
-    parser = argparse.ArgumentParser(description="Эмулятор оболочки — Этап 3: VFS")
+    parser = argparse.ArgumentParser(description="Эмулятор оболочки — Этап 4: Основные команды")
     parser.add_argument("-v", "--vfs", dest="vfs_root", help="Путь к ZIP-архиву с VFS", default=None)
     parser.add_argument("-s", "--script", dest="startup_script", help="Путь к стартовому скрипту", default=None)
     parser.add_argument("--no-interactive", action="store_true", help="Не входить в REPL")
@@ -320,7 +422,7 @@ def print_debug_config():
     print("=== DEBUG: параметры запуска ===")
     print(f"OS: {os.name}, Python: {sys.version.split()[0]}")
     print(f"VFS root:       {CONFIG['vfs_root'] or '(не задан)'}")
-    print(f"Startup script: {CONFIG['startup_script'] or '(не задаn)'}")
+    print(f"Startup script: {CONFIG['startup_script'] or '(не задан)'}")
     print(f"Interactive:    {not CONFIG['no_interactive']}")
     print("===============================")
 
