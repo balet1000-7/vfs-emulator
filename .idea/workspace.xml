@@ -5,12 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ce7cffe2-75ae-40fa-8d03-ebf916b127bc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/mv_command_test.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mv_command_test.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rmdir_command_test.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rmdir_command_test.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stepn1.py" beforeDir="false" afterPath="$PROJECT_DIR$/stepn1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,30 +31,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python..executor": "Run",
-    "Python.dlya_vtorogo.executor": "Run",
-    "Python.for_5stage.executor": "Run",
-    "Python.min_test.executor": "Run",
-    "Python.multilevel_test.executor": "Run",
-    "Python.step1.executor": "Run",
-    "Python.stepn1.executor": "Run",
-    "Python.stepn1.py.executor": "Run",
-    "Python.test.executor": "Run",
-    "Python.test1.executor": "Run",
-    "Python.test2.executor": "Run",
-    "Python.test3.executor": "Run",
-    "Python.test3.txt.executor": "Run",
-    "Python.test_zip.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "D:/PythonProject3",
-    "settings.editor.selected.configurable": "vcs.Git"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python..executor&quot;: &quot;Run&quot;,
+    &quot;Python.dlya_vtorogo.executor&quot;: &quot;Run&quot;,
+    &quot;Python.for_5stage.executor&quot;: &quot;Run&quot;,
+    &quot;Python.min_test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.multilevel_test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.step1.executor&quot;: &quot;Run&quot;,
+    &quot;Python.stepn1.executor&quot;: &quot;Run&quot;,
+    &quot;Python.stepn1.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test1.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test2.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test3.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test3.txt.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_zip.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/PythonProject3&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Git&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Python.multilevel_test">
     <configuration name="for_5stage" type="PythonConfigurationType" factoryName="Python">
       <module name="PythonProject3" />
